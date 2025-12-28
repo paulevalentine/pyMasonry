@@ -1,0 +1,5 @@
+[project]
+name="pyMasonry"
+version="2025.0.0"
+dependencies = [
+]
