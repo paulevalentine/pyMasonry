@@ -11,8 +11,12 @@ class Masonry():
         self.a = 0.70  # alpha for standard mortar beds
         self.b = 0.30  # beta factor
         self.gm = 2.7  # partial factor on material strength
+        self.creep_coefficient = 1.5
+
         # calculate the characteristic compressive strength of the masonry
         self.fk = self.k * self.fb ** self.a * self.fm ** self.b
+
+        # calculate the instant elastic modulus
         self.Em = 1000 * self.fk
 
         #todo add shear strength calculation in basic form
