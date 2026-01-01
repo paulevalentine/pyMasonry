@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Masonry():
     def __init__(self,fb:float,fm:float,k:float)->None:
         """ define the main properties of the masonry """
@@ -25,6 +27,10 @@ class Masonry():
 
     def calc_elastic_modulus(self, fk: float) -> float:
         return 1000 * fk
+
+    def test_value(self, x: str, y: str)->float:
+        df = pd.read_csv('../data/test.csv')
+        return df.at[x,y]
 
         #todo add shear strength calculation in basic form
         #todo add flexural strength calculation in basic form
