@@ -30,7 +30,7 @@ class Masonry():
 
     def test_value(self, x: str, y: str)->float:
         df = pd.read_csv('../data/test.csv')
-        return df.at[x,y]
+        return df.loc[x,y]
 
         #todo add shear strength calculation in basic form
         #todo add flexural strength calculation in basic form
