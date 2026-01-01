@@ -1,4 +1,5 @@
 pyproject.toml
+src/calculationsMasonry.py
 src/compressiveMasonry.py
 src/masonry.py
 src/structuralMasonry.py

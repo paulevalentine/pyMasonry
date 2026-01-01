@@ -1,5 +1,3 @@
-import sympy as sp
-
 class Masonry():
     def __init__(self,fb:float,fm:float,k:float)->None:
         """ define the main properties of the masonry """
@@ -16,11 +14,17 @@ class Masonry():
         self.creep_coefficient: float = 1.5
 
         # calculate the characteristic compressive strength of the masonry
-
-        self.fk = self.k * self.fb ** self.a * self.fm ** self.b
-
+        self.fk: float = self.calc_characteristic_strength(self.k, self.fb,
+                                                      self.a, self.fm, self.b)
         # calculate the instant elastic modulus
-        self.Em = 1000 * self.fk
+        self.Em: float = self.calc_elastic_modulus(self.fk)
+
+    def calc_characteristic_strength(self, k: float, fb: float, a: float, fm: float,
+                                     b: float) -> float:
+        return k * fb ** a * fm ** b
+
+    def calc_elastic_modulus(self, fk: float) -> float:
+        return 1000 * fk
 
         #todo add shear strength calculation in basic form
         #todo add flexural strength calculation in basic form
