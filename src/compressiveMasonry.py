@@ -133,20 +133,20 @@ class Padstone(Masonry):
     def __init__(self, fb:float, fm:float, k:float, near_edge_distance:float, far_edge_distance:float,
                     wall_height:float, padstone_length:float, padstone_width:float):
         super().__init__(fb, fm, k)
-        self.near_edge_distance = near_edge_distance
-        self.far_edge_distance = far_edge_distance
-        self.wall_height = wall_height
-        self.padstone_length = padstone_length
-        self.padstone_width = padstone_width
-        self.padstone_area = self.padstone_length * self.padstone_width
+        self.near_edge_distance: float = near_edge_distance
+        self.far_edge_distance: float = far_edge_distance
+        self.wall_height: float = wall_height
+        self.padstone_length: float = padstone_length
+        self.padstone_width: float = padstone_width
+        self.padstone_area: float = self.padstone_length * self.padstone_width
 
         # calculate the effective spread at mid-height of the wa
         SPREAD_ANGLE: float = 60 * math.pi / 180
         x_max: float = (self.wall_height / 2) /math.tan(SPREAD_ANGLE)
         x: float = min(x_max, self.near_edge_distance)
         y: float = min(x_max, self.far_edge_distance)
-        self.effective_length = x + y + self.padstone_length
-        self.effective_area = self.effective_length * self.padstone_width
+        self.effective_length: float = x + y + self.padstone_length
+        self.effective_area: float = self.effective_length * self.padstone_width
 
         area_ratio: float = min(self.padstone_area / self.effective_area, 0.45)
 
