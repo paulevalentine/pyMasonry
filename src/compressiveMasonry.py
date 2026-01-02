@@ -84,7 +84,7 @@ class Wall(Masonry):
     def calc_effective_thickness(self)->float:
 
         print("Calculate the effective thickness of the wall (mm):")
-        teff, t1, t2 = sp.symbols("t_e, t_1, t_3")
+        teff, t1, t2 = sp.symbols("t_e, t_1, t_2")
         effective_thickness = sp.Eq(teff, (t1**3 + t2**3)**sp.Rational(1,3))
         val = effective_thickness.subs({t1: self.loaded_leaf_thickness, t2: self.other_leaf_thickness}).evalf(4)
         display(effective_thickness, val)
