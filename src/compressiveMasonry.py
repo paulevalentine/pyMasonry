@@ -1,8 +1,9 @@
+from IPython.core.display import Markdown
 from IPython.core.display_functions import display
-
 from structuralMasonry import Masonry
 import math
 import sympy as sp
+globals()['Markdown'] = Markdown
 sp.init_printing(order='none')
 
 class Wall(Masonry):
@@ -20,7 +21,7 @@ class Wall(Masonry):
         self.effective_thickness: float = self.calc_effective_thickness()
 
         # calculate the eccentricity at the top of the wall
-        print("Calculate the eccentricity at the top of the wall (mm):")
+        display(Markdown("Calculate the eccentricity at the top of the wall (mm):"))
         heff, ec, etop = sp.symbols('h_eff, e_c, e_top')
         ec_eq = sp.Eq(ec, etop + heff/450)
         ec_val = ec_eq.subs({heff:self.effective_height, etop:self.top_eccentricity}).evalf(4)
@@ -44,7 +45,7 @@ class Wall(Masonry):
                                                                              self.et)
 
         # calculate the eccentricity at mid-height of the wall
-        print("Calculate the eccentricity at mid-height of the wall (mm):")
+        display(Markdown("Calculate the eccentricity at mid-height of the wall (mm):"))
 
         em, etop, heff = sp.symbols('e_m, e_top, h_ef')
         em_eq = sp.Eq(em,heff/450 + etop/2)
@@ -83,7 +84,7 @@ class Wall(Masonry):
     # --- standard calculations ---
     def calc_effective_thickness(self)->float:
 
-        print("Calculate the effective thickness of the wall (mm):")
+        display(Markdown("Calculate the effective thickness of the wall (mm):"))
         teff, t1, t2 = sp.symbols("t_e, t_1, t_2")
         effective_thickness = sp.Eq(teff, (t1**3 + t2**3)**sp.Rational(1,3))
         val = effective_thickness.subs({t1: self.loaded_leaf_thickness, t2: self.other_leaf_thickness}).evalf(4)
@@ -91,7 +92,7 @@ class Wall(Masonry):
         return val.evalf().rhs
 
     def calc_strength_reduction(self, wall_thickness: float, eccentricity: float)->float:
-        print(f"Calculate the strength reduction factor for the top of the wall:")
+        display(Markdown(f"Calculate the strength reduction factor for the top of the wall:"))
 
         phi, et, t = sp.symbols("phi, e_t, t")
         strength_reduction = sp.Eq(phi, 1 - 2 * (et / t))
@@ -100,7 +101,7 @@ class Wall(Masonry):
         return val.evalf().rhs
 
     def calc_slenderness_reduction(self)->float:
-        print("Calculate the strength reduction factor at mid-height of the wall:")
+        display(Markdown("Calculate the strength reduction factor at mid-height of the wall:"))
         A1, emk, t = sp.symbols("A_1, e_mk, t")
         eqA1 = sp.Eq(A1, 1 - 2 * (emk/t))
         display(eqA1)
@@ -158,28 +159,66 @@ class Padstone(Masonry):
         self.wall_height: float = wall_height
         self.padstone_length: float = padstone_length
         self.padstone_width: float = padstone_width
-        self.padstone_area: float = self.padstone_length * self.padstone_width
 
-        # calculate the effective spread at mid-height of the wa
+        self.padstone_area: float = self.calc_loaded_area()
+
+        # calculate the effective spread at mid-height of the wall
+        display(Markdown("Calculate the effective spread at mid-height based on 60 Deg angle and side constraints:"))
         SPREAD_ANGLE: float = 60 * math.pi / 180
         x_max: float = (self.wall_height / 2) /math.tan(SPREAD_ANGLE)
         x: float = min(x_max, self.near_edge_distance)
         y: float = min(x_max, self.far_edge_distance)
         self.effective_length: float = x + y + self.padstone_length
-        self.effective_area: float = self.effective_length * self.padstone_width
+        leff = sp.symbols('l_eff')
+        leff_eq = sp.Eq(leff, self.effective_length)
+        display(leff_eq.evalf(6))
+
+        Aeff, t = sp.symbols('A_eff, t')
+        Aeff_eq = sp.Eq(Aeff, leff * t)
+        Aeff_val = Aeff_eq.subs({t: self.padstone_width, leff: self.effective_length}).evalf(6)
+        display(Aeff_eq, Aeff_val)
+        self.effective_area: float = Aeff_val.rhs
 
         area_ratio: float = min(self.padstone_area / self.effective_area, 0.45)
 
         # calculate the strength enhancement factor
         beta_min: float = 1.0
+        beta, amin, h, Ab = sp.symbols('beta_c, a_min, h, A_b')
+        beta_eq = sp.Eq(beta, (1 + 0.30*(amin/h))*(1.5 - 1.1 * (Ab/Aeff)))
+        beta_val = beta_eq.subs({amin: self.near_edge_distance, h: self.wall_height, Ab: self.padstone_area, Aeff: self.effective_area}).evalf(3)
+        display(beta_eq, beta_val)
+
         beta_max: float  = min(1.25 + (self.near_edge_distance/(2*self.wall_height)), 1.5)
         beta_calculated: float = min((1 + 0.30 * (self.near_edge_distance / self.wall_height))*(1.5 - 1.1 * area_ratio),beta_max)
         self.beta: float  = max(beta_min, beta_calculated)
 
+        display(Markdown("Apply BS EN 1996-1-1 limits:"))
+        beta_final = sp.symbols('beta')
+        beta_final_eq = sp.Eq(beta_final, self.beta).evalf(3)
+        display(beta_final_eq)
+
         # calculate the capacity of the padstone
-        self.padstone_capacity: float = self.beta * self.padstone_area * self.fk / self.gm * 10**-3 # in kN
+        self.padstone_capacity: float = self.calc_padstone_capacity()
 
     # --- standard calculations ---
+
+    def calc_loaded_area(self)->float:
+        display(Markdown("Calculate the area of the padstone (mm2)"))
+        l, w, Ab = sp.symbols('l, w, A_b')
+        Ab_equ = sp.Eq(Ab, l*w)
+        Ab_val = Ab_equ.subs({l: self.padstone_length, w: self.padstone_width}).evalf()
+        display(Ab_equ, Ab_val)
+        return Ab_val.rhs
+
+    def calc_padstone_capacity(self)->float:
+        display(Markdown("Calculate the capacity of the padstone (kN):"))
+        N, b, Ab, gm, fk = sp.symbols("N_Rd, beta, A_b, gamma_m. fk")
+        N_eq = sp.Eq(N, b * Ab * fk / gm * 10**-3)
+        N_vals = N_eq.subs({b: self.beta, Ab: self.padstone_area, fk: self.fk, gm: self.gm}).evalf(4)
+        display(N_eq, N_vals)
+        return N_vals.rhs
+
+
     def padstone_effective_udl(self, point_load:float)->float:
         """Calculate the effective UDL at mid-height of the wall from the point load"""
         return point_load / (self.effective_length * 10**-3)
