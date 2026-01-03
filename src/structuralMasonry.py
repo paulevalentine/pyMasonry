@@ -1,4 +1,7 @@
-import pandas as pd
+import sympy as sp
+from IPython.core.display import Markdown
+from IPython.core.display_functions import display
+globals()['Markdown'] = Markdown
 
 class Masonry():
     def __init__(self,fb:float,fm:float,k:float)->None:
@@ -16,21 +19,30 @@ class Masonry():
         self.creep_coefficient: float = 1.5
 
         # calculate the characteristic compressive strength of the masonry
-        self.fk: float = self.calc_characteristic_strength(self.k, self.fb,
-                                                      self.a, self.fm, self.b)
+        self.fk: float = self.calc_characteristic_strength()
         # calculate the instant elastic modulus
-        self.Em: float = self.calc_elastic_modulus(self.fk)
+        self.Em: float = self.calc_elastic_modulus()
 
-    def calc_characteristic_strength(self, k: float, fb: float, a: float, fm: float,
-                                     b: float) -> float:
-        return k * fb ** a * fm ** b
+    def calc_characteristic_strength(self) -> float:
 
-    def calc_elastic_modulus(self, fk: float) -> float:
-        return 1000 * fk
+        fk, k,fb, a, fm, b = sp.symbols('f_k, K,  f_b, alpha, f_m, beta')
+        char_strength = sp.Eq(fk, k * fb**a * fm**b)
+        display(Markdown("Calculate characteristic compressive strength of masonry (MPa):"))
+        val = char_strength.subs({k:self.k, fb:self.fb, a:self.a, fm:self.fm, b:self.b}).evalf(3)
+        display(char_strength)
+        display(val)
+        return val.evalf().rhs
 
-    def test_value(self, x: str, y: str)->float:
-        df = pd.read_csv('../data/test.csv')
-        return df.loc[x,y]
+    def calc_elastic_modulus(self) -> float:
+
+        display(Markdown("Calculate the elastic modulus for the masonry (MPa):"))
+        Em, fk = sp.symbols("E_m, f_k")
+        elastic_modulus = sp.Eq(Em, 1000 * fk)
+        val = elastic_modulus.subs({fk:self.fk}).evalf(3)
+        display(elastic_modulus)
+        display(val)
+
+        return val.evalf().rhs
 
         #todo add shear strength calculation in basic form
         #todo add flexural strength calculation in basic form

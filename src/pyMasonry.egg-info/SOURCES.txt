@@ -6,4 +6,5 @@ src/structuralMasonry.py
 src/pyMasonry.egg-info/PKG-INFO
 src/pyMasonry.egg-info/SOURCES.txt
 src/pyMasonry.egg-info/dependency_links.txt
+src/pyMasonry.egg-info/requires.txt
 src/pyMasonry.egg-info/top_level.txt
