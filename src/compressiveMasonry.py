@@ -8,9 +8,9 @@ sp.init_printing(order='none')
 
 class Wall(Masonry):
     """ compressive load capacity of a wall """
-    def __init__(self, fb:float, fm:float, k:float, effective_height:float,
+    def __init__(self, fb:float, fm:float, masonry_type:str, effective_height:float,
                  loaded_leaf_thickness:float, other_leaf_thickness:float, top_eccentricity:float = 5):
-        super().__init__(fb, fm, k)
+        super().__init__(fb, fm, masonry_type)
 
         self.effective_height: float = effective_height # [mm]
         self.loaded_leaf_thickness: float = loaded_leaf_thickness # [mm]
@@ -74,7 +74,6 @@ class Wall(Masonry):
         self.mid_slenderness_reduction: float = self.calc_slenderness_reduction()
 
         # calculate the design vertical capacity of the wall [kN/m]
-
         self.design_vertical_capacity: float = self.calc_vertical_capacity(min(self.top_slenderness_reduction,
                                                                                self.mid_slenderness_reduction),
                                                                            self.fk, self.loaded_leaf_thickness, self.gm)
@@ -130,7 +129,7 @@ class Wall(Masonry):
 
     def calc_vertical_capacity(self, reduction_factor: float, fk: float,
                                wall_thickness:float, partial_factor: float)->float:
-        print("Calculate the design vertical load capacity of the wall (kN/m):")
+        display(Markdown("Calculate the design vertical load capacity of the wall (kN/m):"))
         DVLR, phi_min, fk, gm, t = sp.symbols('DVLR, phi_min, f_k, gamma_m. t')
         eq_DVLR = sp.Eq(DVLR,phi_min * fk * t / gm)
 
@@ -151,9 +150,9 @@ class Wall(Masonry):
               f"{self.design_vertical_capacity:.2f} kN/m")
 
 class Padstone(Masonry):
-    def __init__(self, fb:float, fm:float, k:float, near_edge_distance:float, far_edge_distance:float,
+    def __init__(self, fb:float, fm:float, masonry_type: str, near_edge_distance:float, far_edge_distance:float,
                     wall_height:float, padstone_length:float, padstone_width:float):
-        super().__init__(fb, fm, k)
+        super().__init__(fb, fm, masonry_type)
         self.near_edge_distance: float = near_edge_distance
         self.far_edge_distance: float = far_edge_distance
         self.wall_height: float = wall_height
