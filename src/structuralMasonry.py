@@ -1,18 +1,31 @@
 import sympy as sp
 from IPython.core.display import Markdown
 from IPython.core.display_functions import display
+import pandas as pd
 globals()['Markdown'] = Markdown
 
 class Masonry():
-    def __init__(self,fb:float,fm:float,k:float)->None:
-        """ define the main properties of the masonry """
-        self.fb: float = fb # normalised compressive strenght of the unit
-        self.fm: float = fm # comressive strength of the mortar
-        self.k: float = k # factor for compressive strength
-        '''
-        K = 0.75 typically for block Group 1 units in general purpose mortar
-        K = 0.50 typically for clay brick group 2 units in general purpose mortar
-        '''
+    def __init__(self,fb:float,fm:float,masonry_type:str)->None:
+
+        """ define the main properties of the masonry
+        Parameters:
+            fb unit strength of the brick (MPa)
+            fm compressive strength of masonry (MPa)
+            masonry_type is either 'brick' or 'block' and used to generate the K value
+
+            Cat I units assumed in execution class 2 is assumed for partial factors
+        """
+
+        self.fb: float = fb # normalised compressive strength of the unit
+        self.fm: float = fm # compressive strength of the mortar
+
+        if masonry_type=="brick":
+            self.k: float = 0.50
+        elif masonry_type=="block":
+            self.k: float = 0.75
+        else:
+            self.k: float = 0.40 # lowest value in the table
+
         self.a: float = 0.70  # alpha for standard mortar beds
         self.b: float = 0.30  # beta factor
         self.gm: float = 2.7  # partial factor on material strength
