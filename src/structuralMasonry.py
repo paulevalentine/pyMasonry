@@ -4,8 +4,8 @@ from IPython.core.display_functions import display
 globals()['Markdown'] = Markdown
 
 class Masonry():
-    def __init__(self,fb:float,fm:float,masonry_type:str)->None:
-
+    def __init__(self,fb:float,fm:float,masonry_type:str, masonry_ref:str ="")->None:
+        display(Markdown(f"Masonry properties {masonry_ref}:"))
         """ define the main properties of the masonry
         Parameters:
             fb unit strength of the brick (MPa)
@@ -39,7 +39,7 @@ class Masonry():
 
         fk, k,fb, a, fm, b = sp.symbols('f_k, K,  f_b, alpha, f_m, beta')
         char_strength = sp.Eq(fk, k * fb**a * fm**b)
-        display(Markdown("Calculate characteristic compressive strength of masonry (MPa):"))
+        #display(Markdown("Calculate characteristic compressive strength of masonry (MPa):"))
         val = char_strength.subs({k:self.k, fb:self.fb, a:self.a, fm:self.fm, b:self.b}).evalf(3)
         display(char_strength)
         display(val)
@@ -47,7 +47,7 @@ class Masonry():
 
     def calc_elastic_modulus(self) -> float:
 
-        display(Markdown("Calculate the elastic modulus for the masonry (MPa):"))
+        #display(Markdown("Calculate the elastic modulus for the masonry (MPa):"))
         Em, fk = sp.symbols("E_m, f_k")
         elastic_modulus = sp.Eq(Em, 1000 * fk)
         val = elastic_modulus.subs({fk:self.fk}).evalf(3)

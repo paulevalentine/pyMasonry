@@ -1,4 +1,5 @@
 calculationsMasonry
 compressiveMasonry
+flexuralMasonry
 masonry
 structuralMasonry

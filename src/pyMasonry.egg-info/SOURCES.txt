@@ -1,6 +1,7 @@
 pyproject.toml
 src/calculationsMasonry.py
 src/compressiveMasonry.py
+src/flexuralMasonry.py
 src/masonry.py
 src/structuralMasonry.py
 src/pyMasonry.egg-info/PKG-INFO
