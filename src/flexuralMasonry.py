@@ -23,7 +23,7 @@ class Flexural(Masonry):
         outer_leaf_cracked = self.calc_cracked_section(self.outer_wall_thickness,
                                                        self.outer_leaf.fk, outer_load, self.masonry_ref_o)
 
-        display(Markdown("Total cracked section:"))
+        display(Markdown("Total cracked section (kNm):"))
         Mcrt, Mcri, Mcro = sp.symbols("M_ct M_ci M_co")
         Mct_eq = sp.Eq(Mcrt, Mcri + Mcro)
         Mct_val = Mct_eq.subs({Mcri:inner_leaf_cracked, Mcro:outer_leaf_cracked}).evalf(3)
