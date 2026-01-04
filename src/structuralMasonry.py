@@ -1,7 +1,6 @@
 import sympy as sp
 from IPython.core.display import Markdown
 from IPython.core.display_functions import display
-import pandas as pd
 globals()['Markdown'] = Markdown
 
 class Masonry():
