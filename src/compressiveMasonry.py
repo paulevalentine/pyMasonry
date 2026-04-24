@@ -8,9 +8,9 @@ sp.init_printing(order='none')
 
 class Wall(Masonry):
     """ compressive load capacity of a wall """
-    def __init__(self, fb:float, fm:float, masonry_type:str, effective_height:float,
+    def __init__(self, fb:float, fm:float, gm:float, masonry_type:str, effective_height:float,
                  loaded_leaf_thickness:float, other_leaf_thickness:float, top_eccentricity:float = 5):
-        super().__init__(fb, fm, masonry_type)
+        super().__init__(fb, fm, gm, masonry_type)
 
         self.effective_height: float = effective_height # [mm]
         self.loaded_leaf_thickness: float = loaded_leaf_thickness # [mm]
@@ -150,9 +150,9 @@ class Wall(Masonry):
               f"{self.design_vertical_capacity:.2f} kN/m")
 
 class Padstone(Masonry):
-    def __init__(self, fb:float, fm:float, masonry_type: str, near_edge_distance:float, far_edge_distance:float,
+    def __init__(self, fb:float, fm:float, gm, masonry_type: str, near_edge_distance:float, far_edge_distance:float,
                     wall_height:float, padstone_length:float, padstone_width:float):
-        super().__init__(fb, fm, masonry_type)
+        super().__init__(fb, fm, gm, masonry_type)
         self.near_edge_distance: float = near_edge_distance
         self.far_edge_distance: float = far_edge_distance
         self.wall_height: float = wall_height

@@ -6,7 +6,7 @@ import math
 class masonry():
     """ functions for the design of masonry elements """
 
-    def __init__(self, fm, fb, K):
+    def __init__(self, fm, fb, K, gm):
         """ define the main properties of the masonry """
         '''
         K = 0.75 typically for block Group 1 units in general purpose mortar
@@ -17,15 +17,15 @@ class masonry():
         self.K = K
         self.a = 0.70 # alpha for standard mortar beds
         self.b = 0.30 # beta factor
-        self.gm = 2.7 # partial factor on material strength
+        self.gm = gm # partial factor on material strength
         # calculate the characteristic compressive strength of the masonry
         self.fk = self.K * self.fb**self.a * self.fm**self.b
 
 class masonry_wall(masonry):
     """" load capacity of a wall """
 
-    def __init__(self, fm,fb, hef, twall, touter, ec, K):
-        super().__init__(fm,fb, K)
+    def __init__(self, fm,fb, hef, twall, touter, ec, K, gm):
+        super().__init__(fm,fb, K, gm)
         self.hef = hef # effective height of the wall
         self.twall = twall # width of the loaded leaf
         self.touter = touter # width of any outer leaf

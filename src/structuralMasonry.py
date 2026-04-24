@@ -4,7 +4,7 @@ from IPython.core.display_functions import display
 globals()['Markdown'] = Markdown
 
 class Masonry():
-    def __init__(self,fb:float,fm:float,masonry_type:str, masonry_ref:str ="")->None:
+    def __init__(self,fb:float,fm:float,gm:float, masonry_type:str, masonry_ref:str ="")->None:
         display(Markdown(f"Masonry properties {masonry_ref}:"))
         """ define the main properties of the masonry
         Parameters:
@@ -17,6 +17,7 @@ class Masonry():
 
         self.fb: float = fb # normalised compressive strength of the unit
         self.fm: float = fm # compressive strength of the mortar
+        self.gm = gm # partial factor on material strength
 
         if masonry_type=="brick":
             self.k: float = 0.50
@@ -27,7 +28,6 @@ class Masonry():
 
         self.a: float = 0.70  # alpha for standard mortar beds
         self.b: float = 0.30  # beta factor
-        self.gm: float = 2.7  # partial factor on material strength
         self.creep_coefficient: float = 1.5
 
         # calculate the characteristic compressive strength of the masonry
