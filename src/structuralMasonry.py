@@ -17,6 +17,8 @@ class Masonry():
 
         self.fb: float = fb # normalised compressive strength of the unit
         self.fm: float = fm # compressive strength of the mortar
+        if self.fm > self.fb:
+            self.fm = self.fb
         self.gm = gm # partial factor on material strength
 
         if masonry_type=="brick":
